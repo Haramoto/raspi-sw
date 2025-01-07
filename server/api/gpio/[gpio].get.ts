@@ -1,4 +1,4 @@
-import rgpio from 'rpi-gpio';
+import { requestGPIOAccess } from "node-web-gpio";
 
 export default defineEventHandler(async (event) => {
   const gpio = parseInt(event?.context?.params?.gpio || '-1') as number;
@@ -9,8 +9,9 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  await rgpio.promise.setup(gpio, rgpio.DIR_OUT)
-  const io = await rgpio.promise.read(gpio)
+  const gpioAccess = await requestGPIOAccess();
+  const port = gpioAccess.ports.get(gpio);
+  const io = await port?.read()
 
   return {
     data: io 

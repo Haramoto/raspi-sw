@@ -1,15 +1,19 @@
-import rgpio from 'rpi-gpio';
+import { requestGPIOAccess } from "node-web-gpio";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const gpio = parseInt(event?.context?.params?.gpio || '-1') as number;
 
+  console.log(body)
+
   if(gpio === -1) {
     return 'Invalid GPIO'
   }
 
-  await rgpio.promise.setup(gpio, rgpio.DIR_OUT)
-  await rgpio.promise.write(gpio, body?.data || false)
+  const gpioAccess = await requestGPIOAccess();
+  const port = gpioAccess.ports.get(gpio);
+  await port?.export("out");
+  await port?.write(body?.data ? 1 : 0)
 
   return {
     data: body?.data
