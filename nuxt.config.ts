@@ -14,5 +14,8 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  components: ["@/components"]
+  components: ["@/components"],
+  devServer: {
+    host: '0.0.0.0',
+  }
 })

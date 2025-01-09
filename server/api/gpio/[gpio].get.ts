@@ -1,4 +1,5 @@
 import { requestGPIOAccess } from "node-web-gpio";
+import { store as gpioStore } from "../../stores/gpio-store.ts"
 
 export default defineEventHandler(async (event) => {
   const gpio = parseInt(event?.context?.params?.gpio || '-1') as number;
@@ -9,11 +10,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const gpioAccess = await requestGPIOAccess();
-  const port = gpioAccess.ports.get(gpio);
-  const io = await port?.read()
-
   return {
-    data: io 
+    data: gpioStore[gpio] ?? false
   }
 })
